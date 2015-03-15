@@ -28,10 +28,11 @@
 			$(this).select();
 		});
 
-		$('#address, #size').on('change blur keyup mouseup', function() {
+		$('#address, #size, #amount').on('change blur keyup mouseup', function() {
 			var
 				address = $('#address').val(),
 				size = Math.min(600, Math.max(100, parseInt($('#size').val())));
+				amount = parseFloat($('#amount').val())
 
 			if ( !address ) {
 				address = $('#address').attr('placeholder');
@@ -46,6 +47,7 @@
 
 				self.address = address;
 				self.size    = size;
+				self.amount  = amount;
 
 				self.update();
 			}
@@ -56,10 +58,16 @@
 	App.prototype.update = function() {
 		var
 			self = this,
+			amountstr,
 			qrcode;
 
+		if (this.amount == 0) {
+			amountstr = ''
+		} else {
+			amountstr = '?amount=' + this.amount.toString()
+		}
 		$('#qrcode').qrcode({
-			text: 'bitcoin:' + this.address,
+			text: 'bitcoin:' + this.address + ((amountstr == '') ? '' : amountstr),
 			width: this.pixels * 26,
 			height: this.pixels * 26
 		});
